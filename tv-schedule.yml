@@ -1,0 +1,5 @@
+logging:
+  level: DEBUG
+tvMazeLoader:
+  url: http://api.tvmaze.com/schedule
+  countryCode: GB

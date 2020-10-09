@@ -1,5 +1,6 @@
 package org.wirelessmousetail.tvschedule.api;
 
+@Deprecated //todo delete?
 public class Channel {
     private long id;
     private String name;

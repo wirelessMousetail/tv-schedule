@@ -1,21 +1,22 @@
 package org.wirelessmousetail.tvschedule.api;
 
 import java.time.LocalDate;
-import java.time.OffsetDateTime;
-import java.time.OffsetTime;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.Objects;
 
 public class Program {
-    private long id;
+    private Long id;
     private String name;
-    private Channel channel;
-    private LocalDate date;
-    private OffsetTime startTime;
-    private OffsetDateTime endTime;
+    private String channel; //todo return separate entity?
+    private LocalDate date; //todo think about time zones (maybe there're some in tv maze api?)
+    private LocalTime startTime;
+    private LocalDateTime endTime;
 
-    private Program() { //todo replace with jackson annotations?
+    private Program() { //todo replace with jackson annotations and final fields?
     }
 
-    public Program(long id, String name, Channel channel, LocalDate date, OffsetTime startTime, OffsetDateTime endTime) {
+    public Program(Long id, String name, String channel, LocalDate date, LocalTime startTime, LocalDateTime endTime) {
         this.id = id;
         this.name = name;
         this.channel = channel;
@@ -24,7 +25,7 @@ public class Program {
         this.endTime = endTime;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
@@ -32,7 +33,7 @@ public class Program {
         return name;
     }
 
-    public Channel getChannel() {
+    public String getChannel() {
         return channel;
     }
 
@@ -40,11 +41,30 @@ public class Program {
         return date;
     }
 
-    public OffsetTime getStartTime() {
+    public LocalTime getStartTime() {
         return startTime;
     }
 
-    public OffsetDateTime getEndTime() {
+    public LocalDateTime getEndTime() {
         return endTime;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Program program = (Program) o;
+        return Objects.equals(id, program.id) &&
+                Objects.equals(name, program.name) &&
+                Objects.equals(channel, program.channel) &&
+                Objects.equals(date, program.date) &&
+                Objects.equals(startTime, program.startTime) &&
+                Objects.equals(endTime, program.endTime);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, channel, date, startTime, endTime);
+    }
+
 }

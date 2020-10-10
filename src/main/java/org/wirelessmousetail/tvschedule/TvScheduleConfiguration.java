@@ -17,6 +17,8 @@ public class TvScheduleConfiguration extends Configuration {
     @NotNull
     private TvMazeLoaderFactory tvMazeLoaderFactory;
 
+    private boolean prettyPrintedOutput;
+
     @JsonProperty("jerseyClient")
     public JerseyClientConfiguration getJerseyClientConfiguration() {
         return jerseyClient;
@@ -35,5 +37,13 @@ public class TvScheduleConfiguration extends Configuration {
     @JsonProperty("tvMazeLoader")
     public void setTvMazeLoaderFactory(TvMazeLoaderFactory tvMazeLoaderFactory) {
         this.tvMazeLoaderFactory = tvMazeLoaderFactory;
+    }
+
+    public boolean isPrettyPrintedOutput() {
+        return prettyPrintedOutput;
+    }
+
+    public void setPrettyPrintedOutput(boolean prettyPrintedOutput) {
+        this.prettyPrintedOutput = prettyPrintedOutput;
     }
 }

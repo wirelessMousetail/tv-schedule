@@ -37,6 +37,10 @@ class DateIndex {
         }
     }
 
+    boolean belongsToWeek(LocalDate weekStart) {
+        return weekStart.equals(this.weekStart);
+    }
+
     /**
      * <b>This method is not thread safe and requires external synchronization!</b>
      * @param oldValue old value

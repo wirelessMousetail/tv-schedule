@@ -8,8 +8,8 @@ import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import org.wirelessmousetail.tvschedule.core.DateTimeService;
 import org.wirelessmousetail.tvschedule.core.tvmaze.TvMazeLoader;
-import org.wirelessmousetail.tvschedule.resources.ProgramResource;
 import org.wirelessmousetail.tvschedule.dao.ProgramsDao;
+import org.wirelessmousetail.tvschedule.resources.ProgramResource;
 
 public class TvScheduleApplication extends Application<TvScheduleConfiguration> {
 
@@ -24,10 +24,10 @@ public class TvScheduleApplication extends Application<TvScheduleConfiguration> 
 
     @Override
     public void initialize(Bootstrap<TvScheduleConfiguration> bootstrap) {
-        //todo replace with jackson annotation?
         bootstrap.getObjectMapper().registerModule(new JavaTimeModule());
         bootstrap.getObjectMapper().disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         bootstrap.getObjectMapper().disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+
     }
 
     @Override
@@ -41,8 +41,9 @@ public class TvScheduleApplication extends Application<TvScheduleConfiguration> 
                 .build(config, environment);
         environment.lifecycle().manage(tvMazeLoader);
 
-        environment.jersey().register(new ProgramResource(programsDao));
-        //todo should be configurable (through the command line arguments?)
-        environment.getObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
+        environment.jersey().register(new ProgramResource(programsDao, dateTimeService));
+        if(config.isPrettyPrintedOutput()) {
+            environment.getObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
+        }
     }
 }

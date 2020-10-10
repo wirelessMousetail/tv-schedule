@@ -74,7 +74,7 @@ public class TvMazeLoaderTest {
         verify(client, times(7)).loadSchedule(date.capture());
         assertThat(date.getAllValues(), equalTo(sevenDays(MONDAY)));
 
-        assertThat(programsDao.get(null, null), contains(
+        assertThat(programsDao.get(new ProgramsFilter(null, null)), contains(
                 new Program(1L, NAME_PROGRAM_1, CHANNEL_1.getName(), MONDAY, AIRTIME_PROGRAM_1, END_TIME_PROGRAM_1),
                 new Program(2L, NAME_PROGRAM_2, CHANNEL_2.getName(), MONDAY, AIRTIME_PROGRAM_2, END_TIME_PROGRAM_2),
                 new Program(3L, NAME_PROGRAM_3, CHANNEL_1.getName(), MONDAY, AIRTIME_PROGRAM_3, END_TIME_PROGRAM_3)

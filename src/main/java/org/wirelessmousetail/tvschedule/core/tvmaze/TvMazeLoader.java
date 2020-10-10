@@ -7,7 +7,7 @@ import org.wirelessmousetail.tvschedule.client.TvMazeClient;
 import org.wirelessmousetail.tvschedule.core.DateTimeService;
 import org.wirelessmousetail.tvschedule.core.tvmaze.api.TvMazeProgramEntity;
 import org.wirelessmousetail.tvschedule.dao.ProgramsDao;
-import org.wirelessmousetail.tvschedule.utils.ProgramCreatorUtil;
+import org.wirelessmousetail.tvschedule.utils.ProgramCreatorUtils;
 
 import java.time.LocalDate;
 
@@ -35,10 +35,10 @@ public class TvMazeLoader implements Managed {
             TvMazeProgramEntity[] programs = client.loadSchedule(nextWeekStart.plusDays(i));
             for (TvMazeProgramEntity program : programs) {
                 if (program.getShow() == null || program.getShow().getNetwork() == null) {
-                    LOG.info("Information about show or channel is absent: {}", program);
+                    LOG.debug("Information about show or channel is absent: {}", program);
                     continue;
                 }
-                programsDao.add(ProgramCreatorUtil.create(program));
+                programsDao.add(ProgramCreatorUtils.create(program));
                 importedProgramsCount++;
             }
         }

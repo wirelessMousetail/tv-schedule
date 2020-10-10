@@ -20,10 +20,7 @@ public class TvMazeClient {
         this.countryCode = countryCode;
         this.url = url;
     }
-    //todo should be:
-    // - thread safe
-    // - should exist in only one instance
-    // - add rate limiting
+
     public synchronized TvMazeProgramEntity[] loadSchedule(LocalDate date) {
         LOG.debug("Downloading schedule for {}", date);
         TvMazeProgramEntity[] response = client.target(url)

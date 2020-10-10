@@ -7,10 +7,11 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.wirelessmousetail.tvschedule.api.Program;
 import org.wirelessmousetail.tvschedule.client.TvMazeClient;
-import org.wirelessmousetail.tvschedule.core.api.TvMazeNetwork;
-import org.wirelessmousetail.tvschedule.core.api.TvMazeProgramEntity;
-import org.wirelessmousetail.tvschedule.core.api.TvMazeShow;
-import org.wirelessmousetail.tvschedule.storage.ProgramsIMS;
+import org.wirelessmousetail.tvschedule.core.tvmaze.TvMazeLoader;
+import org.wirelessmousetail.tvschedule.core.tvmaze.api.TvMazeNetwork;
+import org.wirelessmousetail.tvschedule.core.tvmaze.api.TvMazeProgramEntity;
+import org.wirelessmousetail.tvschedule.core.tvmaze.api.TvMazeShow;
+import org.wirelessmousetail.tvschedule.dao.ProgramsDao;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -62,9 +63,9 @@ public class TvMazeLoaderTest {
 
     @Test
     public void testWholeWeekLoaded() throws Exception {
-        ProgramsIMS programsIMS = new ProgramsIMS();
-        TvMazeLoader loader = new TvMazeLoader(client, programsIMS, timeService);
         when(timeService.getNextWeekStart()).thenReturn(MONDAY);
+        ProgramsDao programsDao = new ProgramsDao(timeService);
+        TvMazeLoader loader = new TvMazeLoader(client, programsDao, timeService);
         when(client.loadSchedule(any(LocalDate.class))).thenReturn(createTestData(), new TvMazeProgramEntity[]{});
 
         loader.start();
@@ -73,7 +74,7 @@ public class TvMazeLoaderTest {
         verify(client, times(7)).loadSchedule(date.capture());
         assertThat(date.getAllValues(), equalTo(sevenDays(MONDAY)));
 
-        assertThat(programsIMS.getPrograms(null, null), contains(
+        assertThat(programsDao.get(new ProgramsFilter(null, null)), contains(
                 new Program(1L, NAME_PROGRAM_1, CHANNEL_1.getName(), MONDAY, AIRTIME_PROGRAM_1, END_TIME_PROGRAM_1),
                 new Program(2L, NAME_PROGRAM_2, CHANNEL_2.getName(), MONDAY, AIRTIME_PROGRAM_2, END_TIME_PROGRAM_2),
                 new Program(3L, NAME_PROGRAM_3, CHANNEL_1.getName(), MONDAY, AIRTIME_PROGRAM_3, END_TIME_PROGRAM_3)

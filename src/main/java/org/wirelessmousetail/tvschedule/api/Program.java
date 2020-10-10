@@ -1,5 +1,12 @@
 package org.wirelessmousetail.tvschedule.api;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.dropwizard.validation.ValidationMethod;
+import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.NotEmpty;
+
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -7,13 +14,21 @@ import java.util.Objects;
 
 public class Program {
     private Long id;
+    @NotEmpty
+    @Length(max = 100)
     private String name;
-    private String channel; //todo return separate entity?
-    private LocalDate date; //todo think about time zones (maybe there're some in tv maze api?)
+    @NotEmpty
+    @Length(max = 100)
+    private String channel;
+    @NotNull
+    private LocalDate date;
+    @NotNull
     private LocalTime startTime;
+    @NotNull
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime endTime;
 
-    private Program() { //todo replace with jackson annotations and final fields?
+    private Program() {
     }
 
     public Program(Long id, String name, String channel, LocalDate date, LocalTime startTime, LocalDateTime endTime) {
@@ -66,5 +81,24 @@ public class Program {
     public int hashCode() {
         return Objects.hash(id, name, channel, date, startTime, endTime);
     }
+
+    @Override
+    public String toString() {
+        return "Program{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", channel='" + channel + '\'' +
+                ", date=" + date +
+                ", startTime=" + startTime +
+                ", endTime=" + endTime +
+                '}';
+    }
+
+    @ValidationMethod(message = "Start time should be before end time")
+    @JsonIgnore
+    public boolean isEndTimeValid() {
+        return startTime.atDate(date).isBefore(endTime);
+    }
+
 
 }

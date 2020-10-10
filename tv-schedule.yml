@@ -3,3 +3,4 @@ logging:
 tvMazeLoader:
   url: http://api.tvmaze.com/schedule
   countryCode: GB
+prettyPrintedOutput: true

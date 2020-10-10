@@ -1,10 +1,13 @@
 package org.wirelessmousetail.tvschedule.core;
 
-import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.IsEqual;
 import org.junit.Test;
 
 import java.time.*;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 public class DateTimeServiceTest {
 
@@ -18,16 +21,56 @@ public class DateTimeServiceTest {
 
         LocalDate result = service.getNextWeekStart();
 
-        MatcherAssert.assertThat(result, IsEqual.equalTo(EXPECTED_DATE));
+        assertThat(result, IsEqual.equalTo(EXPECTED_DATE));
     }
 
     @Test
     public void getNextWeekStartNowSunday() {
-        Instant monday = ZonedDateTime.of(2020, 10, 11, 0, 0, 0, 0, DEFAULT_ZONE).toInstant();
-        DateTimeService service = new DateTimeService(Clock.fixed(monday, DEFAULT_ZONE));
+        Instant sunday = ZonedDateTime.of(2020, 10, 11, 0, 0, 0, 0, DEFAULT_ZONE).toInstant();
+        DateTimeService service = new DateTimeService(Clock.fixed(sunday, DEFAULT_ZONE));
 
         LocalDate result = service.getNextWeekStart();
 
-        MatcherAssert.assertThat(result, IsEqual.equalTo(EXPECTED_DATE));
+        assertThat(result, IsEqual.equalTo(EXPECTED_DATE));
+    }
+
+    @Test
+    public void onNextWeekBefore() {
+        Instant monday = ZonedDateTime.of(2020, 10, 5, 0, 0, 0, 0, DEFAULT_ZONE).toInstant();
+        DateTimeService service = new DateTimeService(Clock.fixed(monday, DEFAULT_ZONE));
+
+        boolean result = service.onNextWeek(LocalDate.of(2020, 10, 11));
+
+        assertFalse(result);
+    }
+
+    @Test
+    public void onNextWeekAfter() {
+        Instant monday = ZonedDateTime.of(2020, 10, 5, 0, 0, 0, 0, DEFAULT_ZONE).toInstant();
+        DateTimeService service = new DateTimeService(Clock.fixed(monday, DEFAULT_ZONE));
+
+        boolean result = service.onNextWeek(LocalDate.of(2020, 10, 19));
+
+        assertFalse(result);
+    }
+
+    @Test
+    public void onNextWeekMonday() {
+        Instant monday = ZonedDateTime.of(2020, 10, 5, 0, 0, 0, 0, DEFAULT_ZONE).toInstant();
+        DateTimeService service = new DateTimeService(Clock.fixed(monday, DEFAULT_ZONE));
+
+        boolean result = service.onNextWeek(LocalDate.of(2020, 10, 12));
+
+        assertTrue(result);
+    }
+
+    @Test
+    public void onNextWeekSunday() {
+        Instant monday = ZonedDateTime.of(2020, 10, 5, 0, 0, 0, 0, DEFAULT_ZONE).toInstant();
+        DateTimeService service = new DateTimeService(Clock.fixed(monday, DEFAULT_ZONE));
+
+        boolean result = service.onNextWeek(LocalDate.of(2020, 10, 18));
+
+        assertTrue(result);
     }
 }

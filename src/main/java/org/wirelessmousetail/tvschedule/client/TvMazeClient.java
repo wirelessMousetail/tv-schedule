@@ -2,7 +2,7 @@ package org.wirelessmousetail.tvschedule.client;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.wirelessmousetail.tvschedule.core.api.TvMazeProgramEntity;
+import org.wirelessmousetail.tvschedule.core.tvmaze.api.TvMazeProgramEntity;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.core.MediaType;
@@ -20,10 +20,7 @@ public class TvMazeClient {
         this.countryCode = countryCode;
         this.url = url;
     }
-    //todo should be:
-    // - thread safe
-    // - should exist in only one instance
-    // - add rate limiting
+
     public synchronized TvMazeProgramEntity[] loadSchedule(LocalDate date) {
         LOG.debug("Downloading schedule for {}", date);
         TvMazeProgramEntity[] response = client.target(url)

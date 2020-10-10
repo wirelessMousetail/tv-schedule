@@ -3,23 +3,25 @@ package org.wirelessmousetail.tvschedule.core;
 import java.time.Clock;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.temporal.WeekFields;
-import java.util.Locale;
+import java.time.ZoneId;
 
 public class DateTimeService {
     private Clock clock;
-
-    private static final DayOfWeek FIRST_DAY_OF_WEEK = WeekFields.of(Locale.UK).getFirstDayOfWeek(); //todo locale to properties
 
     public DateTimeService(Clock clock) {
         this.clock = clock;
     }
 
     public DateTimeService() {
-        this.clock = Clock.systemDefaultZone(); //todo set timezone through config?
+        this.clock = Clock.system(ZoneId.of("Europe/London"));
     }
 
     public LocalDate getNextWeekStart() {
-        return LocalDate.now(clock).plusWeeks(1).with(FIRST_DAY_OF_WEEK);
+        return LocalDate.now(clock).plusWeeks(1).with(DayOfWeek.MONDAY);
+    }
+
+    public boolean onNextWeek(LocalDate date) {
+        LocalDate nextWeekStart = getNextWeekStart();
+        return !nextWeekStart.isAfter(date) && nextWeekStart.plusDays(7).isAfter(date);
     }
 }

@@ -1,10 +1,11 @@
-package org.wirelessmousetail.tvschedule.core;
+package org.wirelessmousetail.tvschedule.core.tvmaze;
 
 import io.dropwizard.client.JerseyClientBuilder;
 import io.dropwizard.setup.Environment;
 import org.wirelessmousetail.tvschedule.TvScheduleConfiguration;
 import org.wirelessmousetail.tvschedule.client.TvMazeClient;
-import org.wirelessmousetail.tvschedule.storage.ProgramsIMS;
+import org.wirelessmousetail.tvschedule.core.DateTimeService;
+import org.wirelessmousetail.tvschedule.dao.ProgramsDao;
 
 import javax.ws.rs.client.Client;
 import java.util.Objects;
@@ -14,7 +15,7 @@ public class TvMazeLoaderFactory {
 
     private String url;
     private String countryCode;
-    private ProgramsIMS programsIMS;
+    private ProgramsDao programsDao;
     private DateTimeService dateTimeService;
 
     public String getUrl() {
@@ -33,8 +34,8 @@ public class TvMazeLoaderFactory {
         this.countryCode = countryCode;
     }
 
-    public TvMazeLoaderFactory withInMemoryStorage(ProgramsIMS programsIMS) {
-        this.programsIMS = programsIMS;
+    public TvMazeLoaderFactory withProgramsStorage(ProgramsDao programsDao) {
+        this.programsDao = programsDao;
         return this;
     }
 
@@ -44,13 +45,13 @@ public class TvMazeLoaderFactory {
     }
 
     public TvMazeLoader build(TvScheduleConfiguration configuration, Environment environment) {
-        Objects.requireNonNull(programsIMS, "In memory storage should be set");
+        Objects.requireNonNull(programsDao, "Programs storage should be set");
         Objects.requireNonNull(dateTimeService, "Date time service should be set");
         final Client client = new JerseyClientBuilder(environment)
                 .using(configuration.getJerseyClientConfiguration())
                 .using(environment.getObjectMapper())
                 .build(NAME);
 
-        return new TvMazeLoader(new TvMazeClient(client, countryCode, url), programsIMS, dateTimeService);
+        return new TvMazeLoader(new TvMazeClient(client, countryCode, url), programsDao, dateTimeService);
     }
 }

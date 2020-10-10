@@ -22,6 +22,6 @@ public class DateTimeService {
 
     public boolean onNextWeek(LocalDate date) {
         LocalDate nextWeekStart = getNextWeekStart();
-        return !nextWeekStart.isAfter(date) && !nextWeekStart.plusDays(7).isBefore(date);
+        return !nextWeekStart.isAfter(date) && nextWeekStart.plusDays(7).isAfter(date);
     }
 }

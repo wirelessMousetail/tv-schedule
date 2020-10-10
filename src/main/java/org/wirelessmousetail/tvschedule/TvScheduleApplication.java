@@ -7,9 +7,9 @@ import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import org.wirelessmousetail.tvschedule.core.DateTimeService;
-import org.wirelessmousetail.tvschedule.core.TvMazeLoader;
+import org.wirelessmousetail.tvschedule.core.tvmaze.TvMazeLoader;
 import org.wirelessmousetail.tvschedule.resources.ProgramResource;
-import org.wirelessmousetail.tvschedule.storage.ProgramsIMS;
+import org.wirelessmousetail.tvschedule.dao.ProgramsDao;
 
 public class TvScheduleApplication extends Application<TvScheduleConfiguration> {
 
@@ -32,16 +32,16 @@ public class TvScheduleApplication extends Application<TvScheduleConfiguration> 
 
     @Override
     public void run(TvScheduleConfiguration config, Environment environment) throws Exception {
-        ProgramsIMS programsIMS = new ProgramsIMS();
         DateTimeService dateTimeService = new DateTimeService();
+        ProgramsDao programsDao = new ProgramsDao(dateTimeService);
 
         TvMazeLoader tvMazeLoader = config.getTvMazeLoaderFactory()
-                .withInMemoryStorage(programsIMS)
+                .withProgramsStorage(programsDao)
                 .withDateTimeService(dateTimeService)
                 .build(config, environment);
         environment.lifecycle().manage(tvMazeLoader);
 
-        environment.jersey().register(new ProgramResource(programsIMS));
+        environment.jersey().register(new ProgramResource(programsDao));
         //todo should be configurable (through the command line arguments?)
         environment.getObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
     }

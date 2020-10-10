@@ -3,7 +3,7 @@ package org.wirelessmousetail.tvschedule;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.dropwizard.Configuration;
 import io.dropwizard.client.JerseyClientConfiguration;
-import org.wirelessmousetail.tvschedule.core.TvMazeLoaderFactory;
+import org.wirelessmousetail.tvschedule.core.tvmaze.TvMazeLoaderFactory;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;

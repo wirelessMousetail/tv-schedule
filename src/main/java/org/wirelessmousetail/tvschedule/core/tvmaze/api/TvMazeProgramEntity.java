@@ -1,4 +1,4 @@
-package org.wirelessmousetail.tvschedule.core.api;
+package org.wirelessmousetail.tvschedule.core.tvmaze.api;
 
 import java.time.LocalDate;
 import java.time.LocalTime;

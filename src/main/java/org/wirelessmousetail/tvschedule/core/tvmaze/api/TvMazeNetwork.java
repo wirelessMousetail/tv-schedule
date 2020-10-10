@@ -1,20 +1,17 @@
-package org.wirelessmousetail.tvschedule.core.api;
+package org.wirelessmousetail.tvschedule.core.tvmaze.api;
 
 import java.util.Objects;
 
-public class TvMazeShow {
+public class TvMazeNetwork {
     private long id;
     private String name;
-    private TvMazeNetwork network;
 
-    public TvMazeShow() {
-
+    public TvMazeNetwork() {
     }
 
-    public TvMazeShow(long id, String name, TvMazeNetwork network) {
+    public TvMazeNetwork(long id, String name) {
         this.id = id;
         this.name = name;
-        this.network = network;
     }
 
     public long getId() {
@@ -25,31 +22,25 @@ public class TvMazeShow {
         return name;
     }
 
-    public TvMazeNetwork getNetwork() {
-        return network;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        TvMazeShow that = (TvMazeShow) o;
+        TvMazeNetwork that = (TvMazeNetwork) o;
         return id == that.id &&
-                Objects.equals(name, that.name) &&
-                Objects.equals(network, that.network);
+                Objects.equals(name, that.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, network);
+        return Objects.hash(id, name);
     }
 
     @Override
     public String toString() {
-        return "TvMazeShow{" +
+        return "TvMazeNetwork{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", network=" + network +
                 '}';
     }
 }

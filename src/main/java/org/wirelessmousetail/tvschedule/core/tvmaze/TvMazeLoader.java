@@ -1,11 +1,13 @@
-package org.wirelessmousetail.tvschedule.core;
+package org.wirelessmousetail.tvschedule.core.tvmaze;
 
 import io.dropwizard.lifecycle.Managed;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wirelessmousetail.tvschedule.client.TvMazeClient;
-import org.wirelessmousetail.tvschedule.core.api.TvMazeProgramEntity;
-import org.wirelessmousetail.tvschedule.storage.ProgramsIMS;
+import org.wirelessmousetail.tvschedule.core.DateTimeService;
+import org.wirelessmousetail.tvschedule.core.tvmaze.api.TvMazeProgramEntity;
+import org.wirelessmousetail.tvschedule.dao.ProgramsDao;
+import org.wirelessmousetail.tvschedule.utils.ProgramCreatorUtil;
 
 import java.time.LocalDate;
 
@@ -13,12 +15,12 @@ public class TvMazeLoader implements Managed {
     private static final Logger LOG = LoggerFactory.getLogger(TvMazeLoader.class);
 
     private final TvMazeClient client;
-    private final ProgramsIMS programsIMS;
+    private final ProgramsDao programsDao;
     private final DateTimeService dateTimeService;
 
-    public TvMazeLoader(TvMazeClient client, ProgramsIMS programsIMS, DateTimeService dateTimeService) {
+    public TvMazeLoader(TvMazeClient client, ProgramsDao programsDao, DateTimeService dateTimeService) {
         this.client = client;
-        this.programsIMS = programsIMS;
+        this.programsDao = programsDao;
         this.dateTimeService = dateTimeService;
     }
 
@@ -28,6 +30,7 @@ public class TvMazeLoader implements Managed {
 
         LOG.info("TV schedule import for the next week {} is started", nextWeekStart);
 
+        int importedProgramsCount = 0;
         for (int i = 0; i < 7; i++) {
             TvMazeProgramEntity[] programs = client.loadSchedule(nextWeekStart.plusDays(i));
             for (TvMazeProgramEntity program : programs) {
@@ -35,18 +38,11 @@ public class TvMazeLoader implements Managed {
                     LOG.info("Information about show or channel is absent: {}", program);
                     continue;
                 }
-                programsIMS.add(
-                        program.getShow().getName(),
-                        program.getShow().getNetwork().getName(), //todo add complex behaviour: choose from config one of the: 1. skip this show (default), 2. set unknoownn channel, 3. get channel name from webChannel entity
-                        program.getAirdate(),
-                        program.getAirtime(),
-                        program.getAirdate().atTime(program.getAirtime()).plusMinutes(program.getRuntime())
-
-
-                );
+                programsDao.add(ProgramCreatorUtil.create(program));
+                importedProgramsCount++;
             }
         }
-        LOG.info("TV schedule for the next week is imported");
+        LOG.info("{} programs for the next week were imported", importedProgramsCount);
     }
 
     @Override

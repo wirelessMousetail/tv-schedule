@@ -2,7 +2,7 @@ package org.wirelessmousetail.tvschedule.client;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.wirelessmousetail.tvschedule.core.api.TvMazeProgramEntity;
+import org.wirelessmousetail.tvschedule.core.tvmaze.api.TvMazeProgramEntity;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.core.MediaType;

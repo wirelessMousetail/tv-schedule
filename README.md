@@ -1,7 +1,7 @@
-#Introduction
+# Introduction
 An application, what provides a TV schedule for the next week for the Great Britain
 
-#Running the application
+# Running the application
 To run the application, execute the following commands:
 * Build an application
    
@@ -19,7 +19,7 @@ e.g.
 
       http://localhost:8080/program
     
-#API description
+# API description
 ### Entities description
 Application operates with `Program` entity, which contains the following fields:
 * id - id of a program. Assigned by the application and will be absent in (and only in) program creation request
@@ -55,19 +55,19 @@ Example:
   * `200 OK Content-Type: application/json` response with programs list. Example:
   
     
-    GET http://localhost:8080/program?date=2020-10-13&keywords=least
-    
-    HTTP/1.1 200 OK
-    Content-Type: application/json   
-    [{
-      "id" : 112, 
-      "name" : "The least interesting show",
-      "channel" : "BBC Once",
-      "date" : "2020-10-13",
-      "startTime" : "13:30",
-      "endTime" : "2020-10-13 13:35"
-    },...
-    ]     
+        GET http://localhost:8080/program?date=2020-10-13&keywords=least
+        
+        HTTP/1.1 200 OK
+        Content-Type: application/json   
+        [{
+          "id" : 112, 
+          "name" : "The least interesting show",
+          "channel" : "BBC Once",
+          "date" : "2020-10-13",
+          "startTime" : "13:30",
+          "endTime" : "2020-10-13 13:35"
+        },...
+        ]     
 #### Get exact program request:
 
        GET /program/{program id} HTTP/1.1
@@ -78,18 +78,18 @@ Example:
   * `200 OK Content-Type: application/json` response with program. Example:
     
     
-    GET http://localhost:8080/program/112
-    
-    HTTP/1.1 200 OK
-    Content-Type: application/json
-    {
-      "id" : 112, 
-      "name" : "The least interesting show",
-      "channel" : "BBC Once",
-      "date" : "2020-10-13",
-      "startTime" : "13:30",
-      "endTime" : "2020-10-13 13:35"
-    } 
+        GET http://localhost:8080/program/112
+        
+        HTTP/1.1 200 OK
+        Content-Type: application/json
+        {
+          "id" : 112, 
+          "name" : "The least interesting show",
+          "channel" : "BBC Once",
+          "date" : "2020-10-13",
+          "startTime" : "13:30",
+          "endTime" : "2020-10-13 13:35"
+        } 
       
 #### Add new program to the schedule
     POST /program HTTP/1.1
@@ -185,7 +185,7 @@ Example:
         
         HTTP/1.1 204 No Content
         
-#Tech notes:
+# Tech notes:
 * Some of the programs in TV maze response do not contain information about channel, where program is aired. 
 Currently these shows are being skipped, but this behaviour is a subject for further improvements
 * Since this application is intended to be schedule for the Great Britain, time zones are not considered here:

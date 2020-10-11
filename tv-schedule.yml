@@ -1,6 +1,7 @@
 logging:
-  level: DEBUG
+  level: INFO
 tvMazeLoader:
-  url: http://api.tvmaze.com/schedule
-  countryCode: GB
-prettyPrintedOutput: true
+  url: http://api.tvmaze.com/schedule #url of the TV Maze API schedule endpoint
+  countryCode: GB  #ISO 3166-1 code of a country, for which schedule should be uploaded
+prettyPrintedOutput: true # if true, json in responses will be pretty printed
+

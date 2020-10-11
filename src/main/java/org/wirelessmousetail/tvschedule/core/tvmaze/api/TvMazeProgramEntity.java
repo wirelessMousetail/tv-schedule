@@ -4,10 +4,16 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Objects;
 
+/**
+ * Class for <i>program</i> entity of <a href="http://www.tvmaze.com/api">TV Maze API</a>.
+ */
 public class TvMazeProgramEntity {
     private long id;
     private LocalDate airdate;
     private LocalTime airtime;
+    /**
+     * Duration of a program in minutes
+     */
     private int runtime;
     private TvMazeShow show;
 

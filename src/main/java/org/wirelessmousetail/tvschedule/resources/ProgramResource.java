@@ -2,6 +2,7 @@ package org.wirelessmousetail.tvschedule.resources;
 
 import com.codahale.metrics.annotation.Timed;
 import io.dropwizard.jersey.jsr310.LocalDateParam;
+import org.hibernate.validator.constraints.Length;
 import org.wirelessmousetail.tvschedule.api.Program;
 import org.wirelessmousetail.tvschedule.core.DateTimeService;
 import org.wirelessmousetail.tvschedule.core.ProgramsFilter;
@@ -30,20 +31,40 @@ public class ProgramResource {
         this.dateTimeService = dateTimeService;
     }
 
+    /**
+     * Retrieved all programs for the next week, or filtered by date and/or keywords.
+     * Date should be on the next week, or error will be returned.
+     */
     @GET
     @Timed
-    public List<Program> getPrograms(@QueryParam("date") LocalDateParam date, @QueryParam("keywords") String keywords) {
+    public List<Program> getPrograms(@QueryParam("date") LocalDateParam date,
+                                     @QueryParam("keywords") @Length(max = 100) String keywords) {
         assertOnNextWeek(date, "Parameter 'date' should contain date from the next week");
         return programsDao.get(new ProgramsFilter(date, keywords));
     }
 
+    /**
+     * Retrieved a program by its id.
+     * @param id
+     * @return
+     */
     @GET
     @Timed
     @Path("{id}")
     public Program getProgram(@NotNull @PathParam("id") long id) {
-        return programsDao.get(id);
+        Program program = programsDao.get(id);
+        if (program == null) {
+            throw new WebApplicationException(String.format("There is no program with id %d", id), NOT_FOUND);
+        }
+        return program;
     }
 
+    /**
+     * Adds a program to the schedule. All fields, except id, should be filled. Id must be null.
+     * Date should be on the next week, or error will be returned.
+     * @param program
+     * @return
+     */
     @POST
     @Timed
     public Response addProgram(@Valid @NotNull Program program) {
@@ -57,6 +78,12 @@ public class ProgramResource {
                         .path("{id}").build(created.getId())).entity(created).build();
     }
 
+    /**
+     * Updates a program, passed in request. All fields should be set.
+     * Date should be on the next week, or error will be returned.
+     * @param program
+     * @return
+     */
     @PUT
     @Timed
     public Program updateProgram(@Valid @NotNull Program program) {
@@ -71,6 +98,10 @@ public class ProgramResource {
         return updated;
     }
 
+    /**
+     * Deletes a program with a given id
+     * @param id
+     */
     @DELETE
     @Timed
     @Path("{id}")
@@ -80,12 +111,18 @@ public class ProgramResource {
         }
     }
 
+
     private void assertOnNextWeek(LocalDateParam date, String message) {
         if (date != null) {
             assertOnNextWeek(date.get(), message);
         }
     }
 
+    /**
+     * Asserts that date is on the next week, or throws a WebApplicationException exception with 422 response
+     * @param date
+     * @param message
+     */
     private void assertOnNextWeek(LocalDate date, String message) {
         if(date != null && !dateTimeService.onNextWeek(date)) {
             throw new WebApplicationException(message, UNPROCESSABLE_ENTITY_422);

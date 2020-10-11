@@ -10,6 +10,10 @@ import org.wirelessmousetail.tvschedule.dao.ProgramsDao;
 import javax.ws.rs.client.Client;
 import java.util.Objects;
 
+/**
+ * Factory to instantiate {@link TvMazeLoader} entity.
+ * {@link DateTimeService} and {@link ProgramsDao} should be provided.
+ */
 public class TvMazeLoaderFactory {
     private static final String NAME = "tv-maze-loader";
 

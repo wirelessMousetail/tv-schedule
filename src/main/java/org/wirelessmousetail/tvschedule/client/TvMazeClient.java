@@ -9,6 +9,11 @@ import javax.ws.rs.core.MediaType;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * Client to connect to TV maze API. Will upload TV schedule for the given date for the configured country.<br/>
+ * TV maze api url could be configured in property <i>tvMazeLoader.url</i>.<br/>
+ * Country could be configured in property <i>tvMazeLoader.countryCode</i>(ISO 3166-1).
+ */
 public class TvMazeClient {
     private static final Logger LOG = LoggerFactory.getLogger(TvMazeClient.class);
     private final Client client;
@@ -22,7 +27,7 @@ public class TvMazeClient {
     }
 
     public synchronized TvMazeProgramEntity[] loadSchedule(LocalDate date) {
-        LOG.debug("Downloading schedule for {}", date);
+        LOG.info("Downloading schedule for {}", date);
         TvMazeProgramEntity[] response = client.target(url)
                 .queryParam("country", countryCode)
                 .queryParam("date", date.format(DateTimeFormatter.ISO_DATE))

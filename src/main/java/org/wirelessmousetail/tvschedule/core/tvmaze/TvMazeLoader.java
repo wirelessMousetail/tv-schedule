@@ -11,8 +11,17 @@ import org.wirelessmousetail.tvschedule.utils.ProgramCreatorUtils;
 
 import java.time.LocalDate;
 
+import static org.wirelessmousetail.tvschedule.core.DateTimeService.DAYS_IN_WEEK;
+
+/**
+ * Class which performs upload of next week schedule during startup.
+ * Designed to be extended to perform schedule update during week changes.<br/>
+ * <i>Important: </i>all shows without network(channel) entity are currently skipped, since this application was
+ * designed to provide the TV schedule. Though this behaviour could be changed in future.
+ */
 public class TvMazeLoader implements Managed {
     private static final Logger LOG = LoggerFactory.getLogger(TvMazeLoader.class);
+
 
     private final TvMazeClient client;
     private final ProgramsDao programsDao;
@@ -31,10 +40,11 @@ public class TvMazeLoader implements Managed {
         LOG.info("TV schedule import for the next week {} is started", nextWeekStart);
 
         int importedProgramsCount = 0;
-        for (int i = 0; i < 7; i++) {
+
+        for (int i = 0; i < DAYS_IN_WEEK; i++) {
             TvMazeProgramEntity[] programs = client.loadSchedule(nextWeekStart.plusDays(i));
             for (TvMazeProgramEntity program : programs) {
-                if (program.getShow() == null || program.getShow().getNetwork() == null) {
+                if (notTvProgram(program)) {
                     LOG.debug("Information about show or channel is absent: {}", program);
                     continue;
                 }
@@ -43,6 +53,17 @@ public class TvMazeLoader implements Managed {
             }
         }
         LOG.info("{} programs for the next week were imported", importedProgramsCount);
+    }
+
+    /**
+     * Network entity could be absent: it is not properly described in TV Maze API, but looks like
+     * it is absent for shows, broadcasting through the internet only.
+     *
+     * @param program
+     * @return
+     */
+    private boolean notTvProgram(TvMazeProgramEntity program) {
+        return program.getShow() == null || program.getShow().getNetwork() == null;
     }
 
     @Override

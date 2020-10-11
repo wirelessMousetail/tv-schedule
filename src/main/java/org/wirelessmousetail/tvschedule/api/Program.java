@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.dropwizard.validation.ValidationMethod;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
+import org.wirelessmousetail.tvschedule.dao.ProgramsDao;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
@@ -12,6 +13,20 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Objects;
 
+/**
+ * Representation of a program entity. Currently used both for REST API and in {@link ProgramsDao}.
+ * All fields, except id, are always mandatory.
+ * Fields:
+ * <ul>
+ *  <li><b>id</b> - id of an entity. Must be null for <i>add</i> requests, and mandatory in other cases</li>
+ *  <li><b>name</b> - name of a program. Max 100 symbols</li>
+ *  <li><b>channel</b> - name of a channel, where program is aired. Max 100 symbols</li>
+ *  <li><b>date</b> - air date. Should always be on the next week</li>
+ *  <li><b>startTime</b> - air time</li>
+ *  <li><b>endTime</b> - end date and time. Be aware: program could finish not on the same date it started.
+ *  Must be later than start date and time</li>
+ * </ul>
+ */
 public class Program {
     private Long id;
     @NotEmpty
@@ -23,6 +38,7 @@ public class Program {
     @NotNull
     private LocalDate date;
     @NotNull
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
     private LocalTime startTime;
     @NotNull
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")

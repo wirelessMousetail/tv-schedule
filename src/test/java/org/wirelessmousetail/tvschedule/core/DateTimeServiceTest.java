@@ -15,7 +15,7 @@ public class DateTimeServiceTest {
     public static final LocalDate EXPECTED_DATE = LocalDate.of(2020, 10, 12);
 
     @Test
-    public void getNextWeekStartNowMonday() {
+    public void getNextWeekStartTodayMonday() {
         Instant monday = ZonedDateTime.of(2020, 10, 5, 0, 0, 0, 0, DEFAULT_ZONE).toInstant();
         DateTimeService service = new DateTimeService(Clock.fixed(monday, DEFAULT_ZONE));
 
@@ -25,7 +25,7 @@ public class DateTimeServiceTest {
     }
 
     @Test
-    public void getNextWeekStartNowSunday() {
+    public void getNextWeekStartTodaySunday() {
         Instant sunday = ZonedDateTime.of(2020, 10, 11, 0, 0, 0, 0, DEFAULT_ZONE).toInstant();
         DateTimeService service = new DateTimeService(Clock.fixed(sunday, DEFAULT_ZONE));
 

@@ -2,9 +2,15 @@ package org.wirelessmousetail.tvschedule.core.tvmaze.api;
 
 import java.util.Objects;
 
+/**
+ * Class for <i>show</i> entity of <a href="http://www.tvmaze.com/api">TV Maze API</a>.
+ */
 public class TvMazeShow {
     private long id;
     private String name;
+    /**
+     * TV network (channel). Could be absent (for non-TV shows)
+     */
     private TvMazeNetwork network;
 
     public TvMazeShow() {
